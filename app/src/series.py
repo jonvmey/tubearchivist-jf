@@ -224,8 +224,18 @@ class Show:
         series_id: str = self.show["Id"]
         path: str = f"Shows/{series_id}/Seasons"
         all_seasons: dict = Jellyfin().get(path)
+        existing_seasons: list[str] = []
 
-        return [str(i.get("IndexNumber")) for i in all_seasons["Items"]]
+        for season in all_seasons["Items"]:
+            index: str = season.get("IndexNUmber")
+            if index:
+                existing_seasons.append(index)
+            else:
+                name: str = season.get("Name")
+                if name:
+                    existing_seasons.append(name)
+
+        return existing_seasons
 
     def delete_folders(self, folders: list[str]) -> None:
         """delete temporary folders created"""
